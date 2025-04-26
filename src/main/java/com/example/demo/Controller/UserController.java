@@ -5,14 +5,12 @@ import com.example.demo.DTO.Response.ApiResponse;
 import com.example.demo.DTO.Response.ResUser;
 import com.example.demo.Service.UserService;
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/user")
@@ -20,6 +18,17 @@ import org.springframework.web.bind.annotation.RestController;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class UserController {
     UserService userService;
+
+    @GetMapping
+    public ResponseEntity<ApiResponse<ResUser>> getUserByUsername(@RequestBody ReqUser reqUser) {
+        ResUser response = userService.getUserByUsername(reqUser.getUsername());
+        ApiResponse<ResUser> apiResponse = ApiResponse.<ResUser>builder()
+                .status(HttpStatus.CREATED.value())
+                .message("Data fetched successfully")
+                .data(response)
+                .build();
+        return ResponseEntity.ok(apiResponse);
+    }
 
     @PostMapping
     public ResponseEntity<ApiResponse<ResUser>> createUser(@RequestBody ReqUser reqUser) {

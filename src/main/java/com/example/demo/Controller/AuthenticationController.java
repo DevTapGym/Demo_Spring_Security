@@ -45,11 +45,11 @@ public class AuthenticationController {
         ResIntrospect result = authenticationService.introspect(request);
 
         ApiResponse<ResIntrospect> apiResponse = ApiResponse.<ResIntrospect>builder()
-                .status(HttpStatus.CREATED.value())
+                .status(result.isValid() ? HttpStatus.OK.value() : HttpStatus.BAD_REQUEST.value())
                 .message("Login " + (result.isValid() ? "successful" : "failed"))
                 .data(result)
                 .build();
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(apiResponse);
+        return ResponseEntity.status(result.isValid() ? HttpStatus.OK : HttpStatus.BAD_REQUEST).body(apiResponse);
     }
 }

@@ -33,7 +33,7 @@ public class AuthenticationService {
     PasswordEncoder passwordEncoder;
 
     @NonFinal
-    protected static final String SIGNER_KEY = "BGwmykSuANkzM1mPje22W4RkF2MzbtgmTYSoT4xQx+Ca8/m+hfXru3qEMzHGEL0t";
+    private static final String SIGNER_KEY = "BGwmykSuANkzM1mPje22W4RkF2MzbtgmTYSoT4xQx+Ca8/m+hfXru3qEMzHGEL0t";
 
     public ResAuthentication authenticate(ReqAuthentication reqAuthentication) {
         User user = userRepository.findByUsername(reqAuthentication.getUsername()).orElseThrow(() ->

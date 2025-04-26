@@ -10,6 +10,7 @@ import com.example.demo.Repository.UserRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +22,14 @@ public class UserService {
     UserMapper userMapper;
     PasswordEncoder passwordEncoder;
     RoleRepository roleRepository;
+
+    public ResUser getUserByUsername(String username) {
+        User userExisting = userRepository.findByUsername(username).orElseThrow(()->
+                new RuntimeException("User not found")
+        );
+
+        return userMapper.toResUser(userExisting);
+    }
 
     public ResUser createUser(ReqUser reqUser) {
         if (userRepository.existsByUsername(reqUser.getUsername())){
