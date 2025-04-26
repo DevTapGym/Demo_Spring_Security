@@ -11,6 +11,6 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
 public class ResUser {
     String username;
-    String password;
     String email;
+    String role;
 }

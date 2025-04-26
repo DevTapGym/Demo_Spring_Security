@@ -45,10 +45,10 @@ public class AuthenticationService {
             throw new RuntimeException("Wrong password");
         }
 
-        String token = generateToken(reqAuthentication.getUsername());
+        String token = generateToken(user);
         return ResAuthentication.builder()
                 .token(token)
-                .isSuccess(auth)
+                .isSuccess(true)
                 .build();
     }
 
@@ -68,17 +68,18 @@ public class AuthenticationService {
                 .build();
     }
 
-    private String generateToken(String username) {
+    private String generateToken(User user) {
         JWSHeader header = new JWSHeader(JWSAlgorithm.HS512);
 
+        // Nếu 1 user có nhiều role thì nên tạo thêm 1 hàm chuyển list role thành String
         JWTClaimsSet jwtClaimsSet = new JWTClaimsSet.Builder()
-                .subject(username)
+                .subject(user.getUsername())
                 .issuer("ct9")
                 .issueTime( new Date())
                 .expirationTime(new Date(
                         Instant.now().plus(1, ChronoUnit.HOURS).toEpochMilli()
                 ))
-                .claim("username", username)
+                .claim("scope", user.getRole().getName())
                 .build();
 
         Payload payload = new Payload(jwtClaimsSet.toJSONObject());

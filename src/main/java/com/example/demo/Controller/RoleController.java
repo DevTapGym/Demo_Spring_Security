@@ -9,10 +9,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/role")
@@ -20,6 +19,18 @@ import org.springframework.web.bind.annotation.RestController;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class RoleController {
     RoleService roleService;
+
+    @GetMapping
+    public ResponseEntity<ApiResponse<List<ResRole>>> getAllRoles() {
+        List<ResRole> roles = roleService.getAllRoles();
+
+        ApiResponse<List<ResRole>> apiResponse = ApiResponse.<List<ResRole>>builder()
+                .status(HttpStatus.OK.value())
+                .message("Fetch data successfully")
+                .data(roles)
+                .build();
+        return ResponseEntity.ok(apiResponse);
+    }
 
     @PostMapping
     public ResponseEntity<ApiResponse<ResRole>> createRole(@RequestBody ReqRole reqRole) {

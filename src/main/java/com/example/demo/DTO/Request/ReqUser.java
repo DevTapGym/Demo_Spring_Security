@@ -12,5 +12,4 @@ public class ReqUser {
     String username;
     String password;
     String email;
-    Long roleId;
 }
