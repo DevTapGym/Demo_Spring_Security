@@ -23,12 +23,24 @@ import java.util.List;
 public class UserController {
     UserService userService;
 
+    @GetMapping("/my-info")
+    public ResponseEntity<ApiResponse<ResUser>> getMyInfo() {
+        ResUser response = userService.getMyInfo();
+
+        ApiResponse<ResUser> apiResponse = ApiResponse.<ResUser>builder()
+                .status(HttpStatus.OK.value())
+                .message("Data fetched successfully")
+                .data(response)
+                .build();
+        return ResponseEntity.ok(apiResponse);
+    }
+
     @GetMapping("/getAll")
     public ResponseEntity<ApiResponse<List<ResUser>>> getAllUsers() {
         List<ResUser> response = userService.getAllUsers();
 
         ApiResponse<List<ResUser>> apiResponse = ApiResponse.<List<ResUser>>builder()
-                .status(HttpStatus.CREATED.value())
+                .status(HttpStatus.OK.value())
                 .message("Data fetched successfully")
                 .data(response)
                 .build();
@@ -44,7 +56,7 @@ public class UserController {
         log.info("Role: {}", auth.getAuthorities().toString());
 
         ApiResponse<ResUser> apiResponse = ApiResponse.<ResUser>builder()
-                .status(HttpStatus.CREATED.value())
+                .status(HttpStatus.OK.value())
                 .message("Data fetched successfully")
                 .data(response)
                 .build();

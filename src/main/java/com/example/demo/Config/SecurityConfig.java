@@ -4,6 +4,7 @@ import com.example.demo.Enums.ERole;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -17,10 +18,10 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtGra
 import org.springframework.security.web.SecurityFilterChain;
 
 import javax.crypto.spec.SecretKeySpec;
-import javax.swing.event.HyperlinkEvent;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
     private final String[] PUBLIC_ENDPOINTS = {
             "/api/v1/user",
@@ -41,15 +42,20 @@ public class SecurityConfig {
         httpSecurity.authorizeHttpRequests( request ->
                 request.requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS).permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/user/getAll")
-                        .hasAnyAuthority(ERole.ADMIN.toString())
+                        .hasRole(ERole.ADMIN.toString())
                         .anyRequest().authenticated()
+        );
+
+        httpSecurity.exceptionHandling(exception -> exception
+                        .authenticationEntryPoint(new CustomAuthenticationEntryPoint())
         );
 
         httpSecurity.oauth2ResourceServer( oauth2->
             oauth2.jwt(jwtConfigurer -> jwtConfigurer
                     .decoder(jwtDecoder())
                     .jwtAuthenticationConverter(jwtAuthenticationConverter())
-            )
+
+            ).authenticationEntryPoint(new CustomAuthenticationEntryPoint())
         );
 
         httpSecurity.csrf(AbstractHttpConfigurer::disable);
